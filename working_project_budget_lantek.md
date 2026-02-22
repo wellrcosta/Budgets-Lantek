@@ -2,105 +2,77 @@
 
 ## Project Overview
 Full-stack application for budget management with organization support.
+Tech Stack: NestJS (API) + Vue.js 3 (Frontend) + SQLite
 
-## Tech Stack
-- **Backend**: NestJS (TypeScript) + SQLite + TypeORM
-- **Frontend**: Vue.js 3 + TypeScript + Vuex + Vue Router
-
-## Project Structure
+## Structure
 ```
 Budgets-Lantek/
-├── api/                    # NestJS Backend
+├── api/                    # NestJS Backend (COMPLETE)
 │   src/
-│   ├── auth/              # Authentication module
-│   ├── users/             # User management
-│   ├── organizations/     # Organization CRUD
-│   ├── budgets/           # Budget management
-│   ├── items/             # Reusable items
-│   └── common/            # Shared resources
-└── web/                   # Vue.js Frontend
-    src/
-    ├── views/             # Page components
-    ├── components/        # Shared components
-    ├── store/             # Vuex store
-    ├── router/            # Vue Router config
-    └── services/          # API services
+│   ├── auth/              # ✅ JWT Authentication
+│   ├── users/             # ✅ User management
+│   ├── organizations/     # ✅ Organization CRUD
+│   ├── budgets/           # ✅ Budgets + Export CSV
+│   ├── items/             # ✅ Reusable items
+│   └── common/            # ✅ Guards, decorators, enums
+└── web/                   # ⏳ Vue.js Frontend (TODO)
+```
 
-## Features Status
+## API Features ✅
 
-### ✅ Completed
-- [x] Project structure created
-- [x] Database schema designed (SQLite)
-- [x] Role-based access control (RBAC) defined
+### Authentication
+- POST /auth/register - Register new user
+- POST /auth/login - Login, returns JWT
 
-### 🚧 In Progress
-- [ ] API NestJS setup
-- [ ] Authentication system (JWT)
-- [ ] User management
-
-### 📋 Pending
-- [ ] Organization CRUD
-- [ ] Budget creation
-- [ ] Items management
-- [ ] Export to XLS/CSV
-- [ ] Organization membership
-- [ ] Admin panel
-- [ ] Manager dashboard
-- [ ] Vue.js frontend
-
-## Database Schema
-
-### Users
-- id: number (PK)
-- email: string (unique)
-- password: string (hashed)
-- name: string
-- role: enum (admin, manager, paidUser, user)
-- organizationId: number (FK, nullable)
-- createdAt: date
-- updatedAt: date
+### Users (RBAC)
+- GET /users - List all (admin/manager)
+- GET /users/:id - Get user
+- GET /users/organization/:id - List by org (manager/admin)
+- POST /users - Create (admin)
+- PATCH /users/:id - Update
+- DELETE /users/:id - Delete (admin)
 
 ### Organizations
-- id: number (PK)
-- name: string
-- description: string
-- createdAt: date
-- updatedAt: date
+- GET /organizations - List all (admin)
+- GET /organizations/:id - Get org
+- POST /organizations - Create (admin/manager)
+- PATCH /organizations/:id - Update (admin/manager)
+- DELETE /organizations/:id - Delete (admin)
 
 ### Budgets
-- id: number (PK)
-- name: string
-- description: string
-- totalAmount: number
-- status: enum (draft, pending, approved, rejected)
-- userId: number (FK)
-- organizationId: number (FK)
-- createdAt: date
-- updatedAt: date
+- GET /budgets - List budgets (RBAC: admin=all, manager=org, user=own)
+- GET /budgets/:id - Get budget
+- POST /budgets - Create budget
+- PATCH /budgets/:id - Update own budget
+- DELETE /budgets/:id - Delete own budget
 
 ### Items
-- id: number (PK)
-- name: string
-- description: string
-- unitPrice: number
-- organizationId: number (FK)
-- createdAt: date
-- updatedAt: date
+- GET /items?organizationId=X - List items
+- GET /items/:id - Get item
+- POST /items - Create (admin/manager/paidUser)
+- PATCH /items/:id - Update
+- DELETE /items/:id - Delete (admin/manager)
 
-### BudgetItems (junction table)
-- budgetId: number (FK)
-- itemId: number (FK)
-- quantity: number
-- discount: number
+### Export
+- GET /budgets/export/csv/:id - Export single budget to CSV
+- GET /budgets/export/csv - Export all budgets to CSV
 
 ## Roles & Permissions
-
 | Role | Permissions |
 |------|-------------|
 | admin | Full access, all organizations |
-| manager | View org budgets, users in org |
+| manager | View org budgets, create items, manage users |
 | paidUser | Create budgets, unlimited items |
 | user | Create budgets, limited items |
 
+## Database Schema
+📄 See entities in api/src/**/entities/
+
 ## Last Updated
-2026-02-22
+2026-02-22 - API complete, Frontend TODO
+
+## Next Steps
+1. ⏳ Create Vue.js frontend
+2. ⏳ Vuex store setup
+3. ⏳ Login page
+4. ⏳ Dashboard with role-based views
