@@ -23,6 +23,12 @@ export class OrganizationsService {
     });
   }
 
+  async findPublic(): Promise<Organization[]> {
+    return this.organizationRepository.find({
+      select: ['id', 'name', 'description'],
+    });
+  }
+
   async findById(id: number): Promise<Organization | null> {
     return this.organizationRepository.findOne({
       where: { id },

@@ -11,6 +11,7 @@ export class CreateItemDto {
   @IsNumber()
   unitPrice: number;
 
+  @IsOptional()
   @IsNumber()
   organizationId: number;
 }

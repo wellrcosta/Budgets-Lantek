@@ -55,7 +55,19 @@ export class Budget {
   items: Item[];
 
   @Column({ type: 'simple-json', nullable: true })
-  itemsData: { itemId: number; quantity: number; discount: number; unitPrice: number }[] | null;
+  itemsData:
+    | {
+        itemId?: number;
+        name?: string;
+        unitPrice: number;
+        quantity: number;
+        discount: number;
+        isCustom?: boolean;
+      }[]
+    | null;
+
+  @Column({ type: 'simple-json', nullable: true })
+  extraFees: { label: string; amount: number }[] | null;
 
   @CreateDateColumn()
   createdAt: Date;

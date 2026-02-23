@@ -23,5 +23,16 @@ export class CreateBudgetDto {
 
   @IsOptional()
   @IsArray()
-  itemsData?: { itemId: number; quantity: number; discount: number }[];
+  itemsData?: {
+    itemId?: number;
+    name?: string;
+    unitPrice: number;
+    quantity: number;
+    discount: number;
+    isCustom?: boolean;
+  }[];
+
+  @IsOptional()
+  @IsArray()
+  extraFees?: { label: string; amount: number }[];
 }
