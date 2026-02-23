@@ -75,7 +75,7 @@ export class ExportService {
     return values.map(value => {
       const str = String(value);
       if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '"")}"`;
+        return `"${str.replace(/"/g, '""')}"`;
       }
       return str;
     }).join(',');
