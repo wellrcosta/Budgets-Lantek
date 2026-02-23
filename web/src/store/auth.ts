@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await api.post('/auth/register', { email, password, name })
       token.value = response.data.token
       user.value = response.data.user
-      localStorage.setItem('token', token.value)
+      localStorage.setItem('token', token.value || '')
       return true
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Registration failed'
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await api.post('/auth/login', { email, password })
       token.value = response.data.token
       user.value = response.data.user
-      localStorage.setItem('token', token.value)
+      localStorage.setItem('token', token.value || '')
       return true
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Login failed'
