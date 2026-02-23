@@ -14,11 +14,25 @@ export const useAuthStore = defineStore('auth', () => {
   const isManager = computed(() => user.value?.role === 'manager')
   const isPaidUser = computed(() => user.value?.role === 'paidUser')
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (
+    email: string,
+    password: string,
+    name: string,
+    organizationId?: number,
+    organizationName?: string,
+    organizationDescription?: string,
+  ) => {
     loading.value = true
     error.value = null
     try {
-      const response = await api.post('/auth/register', { email, password, name })
+      const response = await api.post('/auth/register', {
+        email,
+        password,
+        name,
+        organizationId,
+        organizationName,
+        organizationDescription,
+      })
       token.value = response.data.token
       user.value = response.data.user
       localStorage.setItem('token', token.value || '')

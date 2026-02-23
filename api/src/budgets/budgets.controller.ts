@@ -23,7 +23,7 @@ export class BudgetsController {
   @Get()
   findAll(@Request() req) {
     return this.budgetsService.findAll({
-      id: req.user.sub,
+      id: req.user.id,
       role: req.user.role,
       organizationId: req.user.organizationId,
     });
@@ -32,7 +32,7 @@ export class BudgetsController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
     return this.budgetsService.findById(id, {
-      id: req.user.sub,
+      id: req.user.id,
       role: req.user.role,
       organizationId: req.user.organizationId,
     });
@@ -40,7 +40,7 @@ export class BudgetsController {
 
   @Post()
   create(@Body() createDto: CreateBudgetDto, @Request() req) {
-    return this.budgetsService.create(createDto, req.user.sub);
+    return this.budgetsService.create(createDto, req.user.id);
   }
 
   @Patch(':id')
@@ -49,11 +49,11 @@ export class BudgetsController {
     @Body() updateDto: UpdateBudgetDto,
     @Request() req,
   ) {
-    return this.budgetsService.update(id, updateDto, req.user.sub);
+    return this.budgetsService.update(id, updateDto, req.user.id);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
-    return this.budgetsService.remove(id, req.user.sub);
+    return this.budgetsService.remove(id, req.user.id);
   }
 }

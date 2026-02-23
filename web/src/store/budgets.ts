@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../services/api'
-import type { Budget, BudgetItemData } from '../types'
+import type { Budget, BudgetExtraFee, BudgetItemData } from '../types'
 
 export const useBudgetsStore = defineStore('budgets', () => {
   const budgets = ref<Budget[]>([])
@@ -33,7 +33,13 @@ export const useBudgetsStore = defineStore('budgets', () => {
     }
   }
 
-  const createBudget = async (data: { name: string; description?: string; totalAmount?: number; itemsData?: BudgetItemData[] }) => {
+  const createBudget = async (data: {
+    name: string
+    description?: string
+    totalAmount?: number
+    itemsData?: BudgetItemData[]
+    extraFees?: BudgetExtraFee[]
+  }) => {
     try {
       const response = await api.post('/budgets', data)
       budgets.value.push(response.data)

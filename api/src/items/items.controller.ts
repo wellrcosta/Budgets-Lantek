@@ -10,6 +10,8 @@ import {
   ParseIntPipe,
   Query,
   Request,
+  BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -42,11 +44,20 @@ export class ItemsController {
 
   @Post()
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.PAID_USER)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.PAID_USER, UserRole.USER)
   create(@Body() createDto: CreateItemDto, @Request() req) {
-    if (req.user.role !== UserRole.ADMIN && !createDto.organizationId) {
-      createDto.organizationId = req.user.organizationId;
+    if (req.user.role === UserRole.ADMIN) {
+      if (!createDto.organizationId) {
+        throw new BadRequestException('organizationId is required for admin');
+      }
+      return this.itemsService.create(createDto);
     }
+
+    if (!req.user.organizationId) {
+      throw new ForbiddenException('User has no organization');
+    }
+
+    createDto.organizationId = req.user.organizationId;
     return this.itemsService.create(createDto);
   }
 

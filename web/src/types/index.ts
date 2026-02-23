@@ -37,6 +37,8 @@ export interface Budget {
   userId: number
   organizationId?: number
   items?: Item[]
+  itemsData?: BudgetItemData[]
+  extraFees?: BudgetExtraFee[]
   createdAt: string
 }
 
@@ -49,7 +51,15 @@ export interface Item {
 }
 
 export interface BudgetItemData {
-  itemId: number
+  itemId?: number
+  name?: string
+  unitPrice: number
   quantity: number
   discount: number
+  isCustom?: boolean
+}
+
+export interface BudgetExtraFee {
+  label: string
+  amount: number
 }

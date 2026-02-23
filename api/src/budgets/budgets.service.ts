@@ -14,8 +14,10 @@ export class BudgetsService {
   ) {}
 
   async create(createDto: CreateBudgetDto, userId: number): Promise<Budget> {
+    const totalAmount = this.calculateTotalAmount(createDto);
     const budget = this.budgetRepository.create({
       ...createDto,
+      totalAmount,
       userId,
     });
     return this.budgetRepository.save(budget);
@@ -73,6 +75,12 @@ export class BudgetsService {
     }
 
     Object.assign(budget, updateDto);
+    if (updateDto.itemsData || updateDto.extraFees) {
+      budget.totalAmount = this.calculateTotalAmount({
+        itemsData: updateDto.itemsData || budget.itemsData || [],
+        extraFees: updateDto.extraFees || budget.extraFees || [],
+      });
+    }
     return this.budgetRepository.save(budget);
   }
 
@@ -87,5 +95,29 @@ export class BudgetsService {
     }
 
     await this.budgetRepository.delete(id);
+  }
+
+  private calculateTotalAmount(data: {
+    itemsData?: {
+      unitPrice: number;
+      quantity: number;
+      discount: number;
+    }[];
+    extraFees?: { amount: number }[];
+  }): number {
+    const itemsTotal = (data.itemsData || []).reduce((sum, item) => {
+      const quantity = Number(item.quantity || 0);
+      const unitPrice = Number(item.unitPrice || 0);
+      const discount = Number(item.discount || 0);
+      const lineTotal = quantity * unitPrice * (1 - discount / 100);
+      return sum + (Number.isFinite(lineTotal) ? lineTotal : 0);
+    }, 0);
+
+    const feesTotal = (data.extraFees || []).reduce((sum, fee) => {
+      const amount = Number(fee.amount || 0);
+      return sum + (Number.isFinite(amount) ? amount : 0);
+    }, 0);
+
+    return Number((itemsTotal + feesTotal).toFixed(2));
   }
 }
