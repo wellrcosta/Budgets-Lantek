@@ -1,68 +1,210 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Budgets-Lantek
 
-## Available Scripts
+Sistema completo de gestão de orçamentos com controle por organização e permissões baseadas em papéis.
 
-In the project directory, you can run:
+## 🚀 Tecnologias
 
-### `npm start`
+**Backend:** NestJS + TypeScript + TypeORM + SQLite + JWT Auth
+**Frontend:** Vue.js 3 + TypeScript + Pinia + Vue Router
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 📁 Estrutura do Projeto
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```
+Budgets-Lantek/
+├── api/                    # Backend NestJS
+│   ├── src/
+│   │   ├── auth/          # Autenticação JWT
+│   │   ├── users/         # Gerenciamento de usuários
+│   │   ├── organizations/ # Organizações
+│   │   ├── budgets/       # Orçamentos + Export CSV
+│   │   ├── items/         # Itens reutilizáveis
+│   │   └── common/        # Guards, decorators, enums
+│   └── package.json
+├── web/                    # Frontend Vue.js
+│   ├── src/
+│   │   ├── views/         # Páginas
+│   │   ├── components/    # Componentes
+│   │   ├── store/         # Pinia stores
+│   │   └── services/      # API services
+│   └── package.json
+└── README.md
+```
 
-### `npm test`
+## ✅ Funcionalidades
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Autenticação
+- [x] Registro de usuários
+- [x] Login com JWT
+- [x] Proteção de rotas
 
-### `npm run build`
+### Papéis e Permissões
+| Papel | Permissões |
+|-------|------------|
+| **admin** | Acesso total, todas as organizações |
+| **manager** | Ver orçamentos da sua organização, gerenciar usuários |
+| **paidUser** | Criar orçamentos, itens ilimitados |
+| **user** | Criar orçamentos, itens limitados |
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Orçamentos
+- [x] Criar orçamentos
+- [x] Adicionar itens aos orçamentos
+- [x] Calcular totais
+- [x] Exportar para CSV
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Itens
+- [x] Criar itens reutilizáveis por organização
+- [x] Definir preço unitário
+- [x] Vincular a múltiplos orçamentos
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Organizações
+- [x] Criar organizações (admin/manager)
+- [x] Vincular usuários à organização
+- [x] Isolamento de dados por organização
 
-### `npm run eject`
+## 🛠️ Instalação
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Pré-requisitos
+- Node.js 18+
+- npm ou yarn
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clonar o repositório
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+git clone https://github.com/wellrcosta/Budgets-Lantek.git
+cd Budgets-Lantek
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 2. Instalar e rodar o Backend
 
-## Learn More
+```bash
+cd api
+npm install
+npm run start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+O backend estará rodando em `http://localhost:3000`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Instalar e rodar o Frontend
 
-### Code Splitting
+```bash
+cd web
+npm install
+npm run dev
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+O frontend estará em `http://localhost:5173`
 
-### Analyzing the Bundle Size
+## 📖 Endpoints da API
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+### Autenticação
+- `POST /auth/register` - Registrar novo usuário
+- `POST /auth/login` - Login
 
-### Making a Progressive Web App
+### Usuários
+- `GET /users` - Listar usuários (admin/manager)
+- `GET /users/:id` - Ver usuário
+- `POST /users` - Criar usuário (admin)
+- `PATCH /users/:id` - Atualizar usuário
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+### Organizações
+- `GET /organizations` - Listar (admin)
+- `POST /organizations` - Criar (admin/manager)
+- `PATCH /organizations/:id` - Atualizar
 
-### Advanced Configuration
+### Orçamentos
+- `GET /budgets` - Listar (RBAC: admin=all, manager=org, user=own)
+- `POST /budgets` - Criar orçamento
+- `PATCH /budgets/:id` - Atualizar
+- `DELETE /budgets/:id` - Deletar
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+### Itens
+- `GET /items` - Listar itens
+- `POST /items` - Criar item (admin/manager/paidUser)
 
-### Deployment
+### Exportação
+- `GET /budgets/export/csv` - Exportar todos os orçamentos
+- `GET /budgets/export/csv/:id` - Exportar orçamento específico
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+## 🔐 Variáveis de Ambiente
 
-### `npm run build` fails to minify
+Crie um arquivo `.env` na pasta `api/`:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```env
+JWT_SECRET=sua-chave-secreta-aqui
+PORT=3000
+```
+
+## 📊 Testando a API
+
+### Registro
+```bash
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"senha123","name":"Nome Usuario"}'
+```
+
+### Login
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"senha123"}'
+```
+
+### Acessar protegido (use o token do login)
+```bash
+curl -H "Authorization: Bearer SEU_TOKEN" \
+  http://localhost:3000/budgets
+```
+
+## 🏗️ Arquitetura
+
+### Database Schema
+
+**Users:** id, email, password, name, role, organizationId, createdAt, updatedAt
+
+**Organizations:** id, name, description, createdAt, updatedAt
+
+**Budgets:** id, name, description, totalAmount, status, userId, organizationId, createdAt, updatedAt
+
+**Items:** id, name, description, unitPrice, organizationId, createdAt, updatedAt
+
+**BudgetItems:** budgetId, itemId, quantity, discount
+
+## 📝 Scripts Disponíveis
+
+### Backend
+- `npm run start` - Iniciar em modo produção
+- `npm run start:dev` - Iniciar em modo desenvolvimento com hot-reload
+- `npm run build` - Compilar TypeScript
+- `npm run test` - Rodar testes
+
+### Frontend
+- `npm run dev` - Iniciar servidor de desenvolvimento
+- `npm run build` - Build para produção
+- `npm run preview` - Preview do build
+
+## 🐛 Troubleshooting
+
+### Erro: "Cannot find module '@nestjs/cli'"
+```bash
+cd api && npm install --save-dev @nestjs/cli
+```
+
+### Erro: "Cannot find module 'ts-node'"
+```bash
+cd api && npm install --save-dev ts-node
+```
+
+### Porta 3000 em uso
+```bash
+# Matar processos na porta 3000
+lsof -ti:3000 | xargs kill -9
+```
+
+## 📄 Licença
+
+MIT
+
+## 👤 Autor
+
+Criado por Claw para wellrcosta
